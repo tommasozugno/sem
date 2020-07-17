@@ -63,7 +63,7 @@ class CampaignManager(object):
 
     @classmethod
     def new(cls, ns_path, script, campaign_dir, runner_type='Auto',
-            overwrite=False, optimized=True, check_repo=True):
+            overwrite=False, optimized=True, check_repo=True, max_parallel_processes=None):
         """
         Create a new campaign from an ns-3 installation and a campaign
         directory.
@@ -123,7 +123,8 @@ class CampaignManager(object):
         # Initialize runner
         runner = CampaignManager.create_runner(ns_path, script,
                                                runner_type=runner_type,
-                                               optimized=optimized)
+                                               optimized=optimized,
+                                               max_parallel_processes=max_parallel_processes)
 
         # Get list of parameters to save in the DB
         params = runner.get_available_parameters()
@@ -148,7 +149,8 @@ class CampaignManager(object):
 
     @classmethod
     def load(cls, campaign_dir, ns_path=None, runner_type='Auto',
-             optimized=True, check_repo=True):
+             optimized=True, check_repo=True,
+             max_parallel_processes=None):
         """
         Load an existing simulation campaign.
 
@@ -182,12 +184,13 @@ class CampaignManager(object):
         runner = None
         if ns_path is not None:
             runner = CampaignManager.create_runner(ns_path, script,
-                                                   runner_type, optimized)
+                                                   runner_type, optimized,
+                                                   max_parallel_processes=max_parallel_processes)
 
         return cls(db, runner, check_repo)
 
     def create_runner(ns_path, script, runner_type='Auto',
-                      optimized=True):
+                      optimized=True, max_parallel_processes=None):
         """
         Create a SimulationRunner from a string containing the desired
         class implementation, and return it.
@@ -216,7 +219,8 @@ class CampaignManager(object):
 
         return locals().get(runner_type,
                             globals().get(runner_type))(
-                                ns_path, script, optimized=optimized)
+                                ns_path, script, optimized=optimized,
+                                max_parallel_processes=max_parallel_processes)
 
     ######################
     # Simulation running #
