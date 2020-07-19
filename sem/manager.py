@@ -113,7 +113,8 @@ class CampaignManager(object):
             manager = CampaignManager.load(campaign_dir, ns_path,
                                            runner_type=runner_type,
                                            optimized=optimized,
-                                           check_repo=check_repo)
+                                           check_repo=check_repo,
+                                           max_parallel_processes=max_parallel_processes)
 
             if manager.db.get_script() == script:
                 return manager
